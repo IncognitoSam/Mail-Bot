@@ -1,14 +1,15 @@
 import requests
 from bs4 import BeautifulSoup
+from time import sleep
 
 from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.keys import Keys
+
+gmail_url = 'https://concord.onelogin.com/client/apps/select/59238665'
+schoology_url = 'https://concord.onelogin.com/client/apps/select/59238678'
+password = input('Password: ')
 
 driver = webdriver.Chrome(executable_path='/Users/sambanks/Downloads/chromedriver')
-password = input('Password: ')
 
 def site_login():
     driver.get('https://concord.onelogin.com/login')
@@ -22,21 +23,26 @@ def site_login():
     driver.find_element_by_class_name('sc-gzVnrw').click()
 
     driver.implicitly_wait(5)
-    driver.get('https://concord.onelogin.com/client/apps/select/59238678')
+    driver.get(gmail_url)
 
     driver.implicitly_wait(5)
-    scrape_data()
+    driver.find_element_by_class_name('U26fgb').click()
 
-def scrape_data():
-    # page = requests.get('https://app.schoology.com/home')
-    # soup = BeautifulSoup(page.content, 'html.parser')
-    # print(soup)
+    write_email()
 
-    html_source = driver.page_source
-    print(html_source)
+def write_email():  
+    driver.implicitly_wait(5)
+    driver.find_element_by_css_selector('div.T-I.J-J5-Ji.T-I-KE.L3').click()
 
-    # links = soup.find_all('upcoming-events')
-    # print(links)
+    recipient = 'laird.donohue@concordacademy.org'
+    subject = 'Automatic Email'
+    content = 'Hi, you have received an automatic email from python.'
+
+    driver.find_element_by_name('to').send_keys(recipient, Keys.TAB)
+    sleep(2)
+    driver.find_element_by_id(':mr').send_keys(subject)
+    driver.find_element_by_id(':nv').send_keys(content)
+    driver.find_element_by_id(':mh').click()
 
 site_login()
 
